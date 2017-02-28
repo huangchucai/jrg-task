@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  div { margin:5px; background:yellow; }
+  button { margin:5px; font-size:14px; }
+  p { margin:5px; color:blue; }
+  span { color:red; }
+  </style>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+<div data-img="hh" data-role='page' data-hidden-value="false" data-obj='{"name":"hcc","age":25}'  class="data"></div>
+  <div>A div</div>
+  <button>Get "blah" from the div</button>
+  <button>Set "blah" to "hello"</button>
+ 
+  <button>Set "blah" to 86</button>
+  <button>Remove "blah" from the div</button>
+  <button class="btn">设置divspan的值</button>
+  <p>The "blah" value of this div is <span>?</span></p>
+  <p></p>
+<div class="ct">
+  <p>这是data()函数获取的数据<span></span></p>
+</div>
+<script>
+$("button").click(function(e) {
+  var value;
+ 
+  switch ($("button").index(this)) {
+    case 0 :
+      value = $("div").data("blah");
+      break;
+    case 1 :
+      $("div").data("blah", "hello");
+      value = "Stored!";
+      break;
+    case 2 :
+      $("div").data("blah", 86);
+      value = "Stored!";
+      break;
+    case 3 :
+      $("div").removeData("blah");
+      value = "Removed!";
+      break;
+  }
+ 
+  $("span").text("" + value);
+  $("p:last").text($("div").data('blah'))
+});
+$("button.btn").click(function(event) {
+  //$("div.ct").data('test',{name:"hcc",age:25})
+   $("div.ct").data({name:"hcc",age:25})
+   $("div.ct p span").text($("div.ct").data().name+"    "+$("div.ct").data().age)
+  //$("div.ct p span").text($("div.ct").data('test').name+"    "+$("div.ct").data('test').age)
+});
+console.log($('div.data').data("img"))
+console.log($('div.data').data("hiddenValue"))
+console.log($('div.data').data("obj").name)
+</script>
+ 
+</body>
+</html>

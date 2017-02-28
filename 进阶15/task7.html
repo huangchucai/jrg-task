@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>题目七</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .content{
+            width: 900px;
+            margin: 0 auto;
+        }
+        .layout{
+            border: 2px solid red;
+            margin-bottom: 20px;
+        }
+        .second{
+            height: 100px;
+            overflow: auto;
+
+        }
+        .main{
+            width: 50px;
+            height:50px;
+            border: 1px solid blueviolet;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+        .ct{
+            background: #000;
+            height:800px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="first layout" >
+        <h1>第一题</h1>
+        <button class="btn">点击我变色</button>
+    </div>
+    <div class="second layout">
+        <h1>第二题</h1>
+        <div class="ct">
+        </div>
+    </div>
+    <p class="p">滚动条距离窗口的距离</p>
+    <div class="three layout">
+        <h1>第三题</h1>
+        <div class="main"></div>
+    </div>
+    <div class="layout four">
+        <h1>第四题</h1>
+        <input type="text" class="ipt">
+    </div>
+    <div class="layout five">
+        <h1>第五题</h1>
+        <select name="select" id="sel">
+            <option value="backetball">篮球</option>
+            <option value="football" selected>足球</option>
+            <option value="vollyball">排球</option>
+        </select>
+    </div>
+
+
+</div>
+
+
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script>
+        //第一题
+        $(".btn").on('click',function(){
+            $(this).css('backgroundColor',"red");
+            setTimeout(function(){
+                $(".btn").css('backgroundColor',"blue");
+            },200)
+        })
+        //第二题
+        $(".second").scroll(function(){
+            var value= $(".p").text()+"  "+$('.second').scrollTop()
+            $(".p").text(value)
+
+        })
+/*        $(".main").on('mouseover',function(){
+            $(this).css("backgroundColor",'red')
+        })
+        $(".main").on('mouseout',function(){
+            $(this).css("backgroundColor",'white')
+        })*/
+        //第三题
+        $(".main").hover(
+            function(){$(this).css("backgroundColor",'red')  },
+            function(){$(this).css("backgroundColor",'white')  }
+        )
+        //第四题
+        $(".ipt").on("fouce",function(){
+            $(this).css({borderColor:blue});
+        })
+        $(".ipt").on("change",function(){
+            var value=$(this).val().toUpperCase();
+            $(this).val(value)
+        })
+        $(".ipt").on("blur",function(){
+            $(this).css({borderColor:'initial'});
+            console.log($(this).val())
+        })
+        //第五题
+        $("#sel").on("change",function(){
+            console.log($(this).val())
+        })
+    </script>
+</body>
+</html>
