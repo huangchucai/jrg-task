@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>窗口可视范围</title>
+    <style>
+        .box{
+            height: 1000px;
+            border:2px solid red;
+        }
+        .show{
+            border: 2px solid saddlebrown;
+        }
+    </style>
+</head>
+<body>
+<div class="box"></div>
+<p class="show">我要慢慢出现了</p>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+var showOver=false
+$(window).on("scroll",function(){
+    if(!showOver){
+        isVisible($(".show"))
+    }
+})
+function isVisible($node){
+    var windowHeight=$(window).height(),
+        scrollTop=$(window).scrollTop(),
+        offsetTop=$node.offset().top,
+        objHeight=$node.outerHeight();
+        if(windowHeight+scrollTop>offsetTop && offsetTop+objHeight>scrollTop){
+            showOver=true;
+            console.log(true)
+            return true
+        }
+        else {
+            return false
+        }
+}
+</script>
+</body>
+</html>

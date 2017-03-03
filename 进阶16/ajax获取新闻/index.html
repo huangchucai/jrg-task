@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>获取新闻</title>
+<style>
+    *{
+        margin:0 ;
+        padding: 0;
+    }
+    ul{
+        list-style: none;
+    }
+    a{
+        text-decoration: none;
+    }
+  .container{
+    width: 900px;
+    margin: 0 auto;
+  }
+  .item{
+      margin: 20px auto;
+  }
+    .item:after{
+        content: '';
+        display: block;
+        clear: both;
+    }
+    .item li{
+        margin-bottom: 15px;
+    }
+    .pic{
+        float: left;
+    }
+    .pic img{
+        width: 50px;
+        height:50px;
+    }
+    h2{
+        margin-left: 60px;
+        color: #000;
+        font-size: 14px;
+    }
+    p{
+        margin-top:10px;
+        color: #ccc;
+        font-size: 14px;
+        margin-left: 60px;
+    }
+/*    .btn{
+        display: block;
+        width: 70px;
+        height: 25px;
+        line-height: 25px;
+        color: #000;
+        text-decoration: none;
+        border: 1px solid #cccccc;
+        font-size: 14px;
+        text-align: center;
+        border-radius: 3px;
+    }*/
+</style>
+</head>
+<body>
+  <div class="container">
+      <ul class="item">
+ <!--         <li>
+              <a href="http://view.inews.qq.com/a/20160830A02SEB00">
+              <div class="pic">
+                  <img src="http://inews.gtimg.com/newsapp_ls/0/531730377_150120/0" alt="新闻图片">
+              </div>
+              <h2>中国轰6K研发险些被俄罗斯发动机厂商卡脖子</h2>
+              <p>近日，轰6K＂战神＂轰炸机首次公开亮相。在中国...</p>
+             </a>
+          </li>
+          <li>
+              <a href="http://view.inews.qq.com/a/20160830A02SEB00">
+                  <div class="pic">
+                      <img src="http://inews.gtimg.com/newsapp_ls/0/531730377_150120/0" alt="新闻图片">
+                  </div>
+                  <h2>中国轰6K研发险些被俄罗斯发动机厂商卡脖子</h2>
+                  <p>近日，轰6K＂战神＂轰炸机首次公开亮相。在中国...</p>
+              </a>
+          </li>
+          <li>
+              <a href="http://view.inews.qq.com/a/20160830A02SEB00">
+                  <div class="pic">
+                      <img src="http://inews.gtimg.com/newsapp_ls/0/531730377_150120/0" alt="新闻图片">
+                  </div>
+                  <h2>中国轰6K研发险些被俄罗斯发动机厂商卡脖子</h2>
+                  <p>近日，轰6K＂战神＂轰炸机首次公开亮相。在中国...</p>
+              </a>
+          </li>-->
+      </ul>
+      <p class="btn">加载更多</p>
+  </div>
+  	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+
+        var pageindex=0; //传递一个改变后台的数据
+        var ajaxOver=true;
+        var isOver=false;  //判定数据是否传递完
+        getNews();
+        $(window).on("scroll",function(){
+            if(isShow($('.btn'))&&!isOver&&ajaxOver){
+                getNews()
+            }
+        })
+/*        $(".btn").on("click",function(e){
+            $(this).data("lockajax",true);
+            e.preventDefault();
+            if($(this).data('lockajax')){
+                $(this).data('lockajax',false) //添加一个状态锁，防止用户在没有得到数据之前多次点击
+                $.ajax({
+                    url: "/getNews",
+                    method: 'GET',
+                    data: {page:pageindex}
+                }).done(function(res){
+                    pageindex=pageindex+1;
+                    appendhtml(res.news);
+                    $(this).data('lockajax',true)
+                })
+            }
+        })*/
+        function getNews(){
+            ajaxOver=false;  //正在发送ajax请求，数据还没有到来
+            //$(this).data("lockajax",true);
+           // if($(this).data('lockajax')){
+                //$(this).data('lockajax',false) //添加一个状态锁，防止用户在没有得到数据之前多次点击
+                $.ajax({
+                    url: "/getNews",
+                    method: 'GET',
+                    data: {page:pageindex}
+                }).done(function(res){
+                    pageindex=pageindex+1;
+                    appendhtml(res.news);
+                    //$(this).data('lockajax',true)
+                    ajaxOver=true  //数据已经到来
+                    //判定最底部的元素是不是出现在页面中并且数据没有传递完发送请求(因为之前没有滚动条)
+                    if(isShow($('.btn'))&& !isOver){
+                        getNews()
+                    }
+                }).fail(function(){
+                    alert("服务器出错了")
+                })
+           // }
+        }
+        //当没有数据返回后，不要请求数据了
+        function appendhtml(arr){
+            if(arr.length===0){
+                isOver=true;   //数据传递完成
+                $(".btn").html("人家没有内容了，不要滑动了")
+            }
+            var str="";
+            for(var i=0;i<arr.length;i++){
+                str+="<li>"
+                str+="<a href="+arr[i].link+">";
+                str+="<div class='pic'>";
+                str+=   "<img src="+arr[i].img+"alt='新闻图片'>"
+                str+="</div>"
+                str+="<h2>"+arr[i].title+"</h2>"
+                str+="<p>"+arr[i].brif+"</p>"
+                str+="</a>"
+                str+="</li>"
+            }
+            $(".item").append(str);
+        }
+        function isShow($node){
+            var windowHeight=$(window).height();    //获取可见的高度
+            var scrollTop=$(window).scrollTop();  //获取滚动条的距离
+            var offsetHeight=$node.offset().top;    //获取元素距离document的顶部高度
+            var objHeight=$node.outerHeight(true);  //获取元素的高度
+            //注意一个元素的windowHeight+scrollHeight=offsetHeight
+            if(windowHeight+scrollTop>offsetHeight && offsetHeight+objHeight>scrollTop){
+                return  true
+            }
+            else{
+                return false
+            }
+        }
+  	</script>
+</body>
+</html>
