@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>渐变轮播</title>
+    <style>
+        *{
+            margin: 0;
+            padding:0;
+        }
+        ul{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        .ct{
+            position: relative;
+            width:310px;
+            height: 205px;
+        }
+        .ct-img{
+            position:relative;
+        }
+        .ct-img li{
+            position: absolute;
+            display: none;
+        }
+        .ct-img .show{
+            display: block;
+        }
+        .ct-img img{
+            width:310px;
+            height: 205px;
+        }
+        .prev{
+            left: 10px;
+        }
+        .next{
+            right: 10px;
+        }
+        .btn{
+            width: 30px;
+            height:30px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            transform:translateY(-50%);
+            background: #4E443C;
+            text-align: center;
+            color: #fff;
+            font-size: 16px;
+            line-height: 30px;
+            box-shadow: 0px 1px 4px #999;
+        }
+        .control{
+            display: flex;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform:translateX(-50%)
+        }
+        .control li{
+            width: 16px;
+            height:4px;
+            border-radius: 2px;
+            background: #fff;
+            cursor: pointer;
+            margin-left: 5px;
+            transition: all 0.3s;
+        }
+        .control li:first-child{
+            margin-left: 0px;
+        }
+        .control .active{
+            background: #666666;
+        }
+    </style>
+</head>
+<body>
+<div class="ct">
+    <ul class="ct-img">
+        <li class="show"><a href="javascript:;"><img src="http://cdn.jirengu.com/book.jirengu.com/img/23.jpg" alt=""></a></li>
+        <li><a href="javascript:;"><img src="http://cdn.jirengu.com/book.jirengu.com/img/26.jpg" alt=""></a></li>
+        <li><a href="javascript:;"><img src="http://cdn.jirengu.com/book.jirengu.com/img/24.jpg" alt=""></a></li>
+        <li><a href="javascript:;"><img src="http://cdn.jirengu.com/book.jirengu.com/img/25.jpg" alt=""></a></li>
+    </ul>
+    <a href="" class="btn prev">&lt;</a>
+    <a href="" class="btn next">&gt;</a>
+    <ul class="control">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    var $ctImg=$(".ct-img"),
+        $liImg=$(".ct-img li")
+        $prev=$(".prev"),
+        $next=$(".next"),
+        $control=$(".control");
+    var lastIndex,//上一个显示图片索引
+        pageIndex=0, //当前图片索引
+        clock;//触发定时器返回值
+    //1. 获取对应的图片索引，并隐藏上一个元素
+    //2. 给相应的控制键添加样式
+    //3. 点击相应的控制键后显示相应的图片，隐藏其他图片
+    $(".next").on("click",function(e){
+        stopAuto()
+        e.preventDefault();
+        showNext()
+        auto()
+    })
+    $(".prev").on("click",function(e){
+        stopAuto()
+        e.preventDefault();
+        showPrev()
+        auto()
+    })
+    $(".control li").on("click",function(){
+        stopAuto()
+        var index=$(this).index();
+        if(index>pageIndex){
+            play(index)
+        }
+        else if(index<pageIndex){
+            play(index)
+        }
+        auto()
+    })
+    auto();
+    function play(num){
+        //console.log(pageIndex); //这里pageIndex就是点击前面的显示元素
+        $liImg.eq(pageIndex).fadeOut(500)
+        $liImg.eq(num).fadeIn(500)
+        pageIndex=num;
+        $control.children().removeClass("active").eq(num).addClass("active")
+    }
+    function showNext(){
+        lastIndex=pageIndex;
+        pageIndex++;
+        if(pageIndex>3){
+            pageIndex=0
+        }
+        $liImg.eq(lastIndex).fadeOut(500)
+        $liImg.eq(pageIndex).fadeIn(500)
+        addActive()
+    }
+    function showPrev(){
+        lastIndex=pageIndex;
+        pageIndex--;
+        if(pageIndex<0){
+            pageIndex=3
+        }
+        $liImg.eq(lastIndex).fadeOut(500)
+        $liImg.eq(pageIndex).fadeIn(500)
+        addActive()
+    }
+
+    function addActive(){
+        $control.children().removeClass("active").eq(pageIndex).addClass("active")
+    }
+    function stopAuto(){
+        clearInterval(clock)
+    }
+    function auto(){
+        clock = setInterval(showNext,2000)
+    }
+
+</script>
+</body>
+</html>

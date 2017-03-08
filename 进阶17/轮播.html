@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片的轮播</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        ul{
+            list-style:none;
+        }
+        a{
+            text-decoration: none;
+        }
+        .carousel{
+            position: relative;
+            width: 320px;
+            height: 180px;
+            overflow: hidden;
+        }
+        .carousel .ct-img{
+            display: flex;
+            width: 1280px;
+            position: relative;
+        }
+        .carousel .ct-img img{
+            width: 320px;
+            height: 180px;
+        }
+        .btn{
+            width:30px;
+            height:30px;
+            border-radius: 50%;
+            border: 1px solid white;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            display: block;
+            font-size: 20px;
+            text-align: center;
+        }
+        .prev{
+            left:10px;
+        }
+        .next{
+            right: 10px;
+        }
+        .control{
+            display: flex;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .control li a{
+            display: block;
+            width: 30px;
+            height:6px;
+            border: 1px solid white;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+        .control li .active{
+            background: #ccc;
+        }
+    </style>
+</head>
+<body>
+<div class="carousel">
+    <ul class="ct-img">
+        <li data-index="0"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/2.jpg" alt=""></a></li>
+        <li data-index="1"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/3.jpg" alt=""></a></li>
+        <li data-index="2"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/4.jpg" alt=""></a></li>
+        <li data-index="3"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/5.jpg" alt=""></a></li>
+    </ul>
+    <a href="#" class="btn next">&gt;</a>
+    <a href="#" class="btn prev">&lt;</a>
+    <ul class="control">
+        <li><a href="#" class="active"></a></li>
+        <li><a href="#"></a></li>
+        <li><a href="#"></a></li>
+        <li><a href="#"></a></li>
+    </ul>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+ //img是320px
+    //1.获取要运用到的dom元素
+    var $ctImg=$(".ct-img"),
+         $control=$(".control"),
+         $next=$(".next"),
+         $prev=$(".prev"),
+         currentPage=0,
+         animateOff=true; //设置一个状态锁，防止用户多次点击
+    var $imgLength=$ctImg.children().length;
+    var $imgWidth=$ctImg.children().eq(0).width();
+    //1. 让我们有一个视觉得改变，同时不改变Dom的顺序
+    var $firstClone=$ctImg.children().first().clone();
+    var $lastClone=$ctImg.children().last().clone();
+    $ctImg.prepend($lastClone);
+    $ctImg.append($firstClone);
+    //2.设置容器的高度，让它覆盖整个子元素
+    $ctImg.width($ctImg.children().length*$ctImg.children().eq(0).width());
+    $ctImg.css("left","-320px");
+    //4.绑定元素
+    $next.on("click",function(e){
+        e.preventDefault();
+        playNext(1)
+    })
+     $prev.on("click",function(e){
+         e.preventDefault();
+         playprev(1);
+     })
+    $(".control li a").on('click',function(e){
+        e.preventDefault();
+        var index=$(".control li a").index($(this));
+        if(index<currentPage){
+            console.log('index:'+index);
+            console.log(currentPage)
+            playprev(currentPage-index);
+        }
+        else if(index>currentPage){
+            console.log('index:'+index);
+            console.log(currentPage)
+            playNext(index-currentPage)
+        }
+    })
+    //3.让元素动起来
+    function playNext(num){
+        if(animateOff){
+            animateOff=false;
+            $ctImg.animate({
+                left:'-='+num*$imgWidth
+            },300,function(){
+                animateOff=true;
+                currentPage+=num;  //把currentPage设置成index的值
+                //console.log(currentPage)
+                if(currentPage===$imgLength){
+                    currentPage=0
+                    $ctImg.css("left",0-$imgWidth)
+                }
+                console.log("nextcurrentPage:"+currentPage)
+                show();
+
+            })
+        }
+
+    }
+    function playprev(num){
+        if(animateOff) {
+            animateOff=false;
+            $ctImg.animate({
+                left: '+=' + $imgWidth*num  //移动了照片后，只需要做1个事情，把currentPage设置成对应的点击按钮索引
+            }, 300, function () {
+                currentPage-=num //把currentPage设置成index的值
+                animateOff=true;
+                if (currentPage < 0) {
+                    $ctImg.css("left", 0 - $imgLength * $imgWidth)
+                    currentPage=$imgLength-1;
+                }
+                show();
+                //console.log(currentPage)
+            })
+        }
+    }
+    function show(){
+        $control.find("a").removeClass("active")
+                 .eq(currentPage).addClass("active")
+    }
+</script>
+</body>
+</html>

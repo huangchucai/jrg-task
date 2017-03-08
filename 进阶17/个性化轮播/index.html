@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个性化轮播</title>
+    <link rel="stylesheet" href="css/css.css">
+</head>
+<body>
+    <div class="ct">
+        <ul class="ct-ul">
+            <li><a href="javacript:;"><img src="imgags/1.jpg" alt=""></a></li>
+            <li><a href="javacript:;"><img src="imgags/2.jpg" alt=""></a></li>
+            <li><a href="javacript:;"><img src="imgags/3.jpg" alt=""></a></li>
+            <li><a href="javacript:;"><img src="imgags/4.jpg" alt=""></a></li>
+        </ul>
+        <a href="" class="btn prev">&lt;</a>
+        <a href="" class="btn next">&gt;</a>
+        <ul class="control">
+            <li class="active"><img src="imgags/1.jpg" alt=""></li>
+            <li><img src="imgags/2.jpg" alt=""></li>
+            <li><img src="imgags/3.jpg" alt=""></li>
+            <li><img src="imgags/4.jpg" alt=""></li>
+        </ul>
+    </div>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        //1.获取对应的变量
+        var $ctLi=$(".ct-ul li"),
+            $ctUl=$(".ct-ul"),
+            $next=$(".next"),
+            $prev=$(".prev"),
+            $controlIi=$(".control li"),
+            imgCount=$ctLi.length, //获取复制之前的图片
+            imgWidth=$ctLi.eq(0).width();
+        var currentPage=0;   //0 1 2 3
+        var isAnimate=false;
+        //实现轮播元素的无限链接
+        //A:首先产生一种视觉效果，当用户点击第一张的时候，还需要点击到第三张，
+        //不改变元素的DOM结构，就需要把元素相应的复制到前面，产生视觉效果
+        //B:移动包含容器的位置，让观众看出最后一个
+        //2.把最后的元素复制到开头，把开头的元素复制到最前面
+        $ctUl.prepend($ctLi.last().clone())
+        $ctUl.append($ctLi.first().clone())
+        //2. 动态的设置ul容器的宽度
+        $ctUl.css("width",$(".ct-ul li").length*imgWidth)
+        $ctUl.css("left",0-imgWidth)
+
+        $next.on("click",function (e) {
+            e.preventDefault()
+            playNext(1)
+        })
+        $prev.on("click",function (e) {
+            e.preventDefault()
+            playPrev(1)
+        })
+        $controlIi.on("click",function(){
+            var index=$(this).index()
+            if(index>currentPage){
+                playNext(index-currentPage)
+            }
+            else if(index<currentPage){
+                playPrev(currentPage-index)
+            }
+        })
+
+
+        //3.定义函数让它动起来
+        function playNext(num){
+            if(isAnimate) return;
+            isAnimate=true;
+            $ctUl.animate({
+                left:"-="+imgWidth*num
+            },300,function(){
+                currentPage=num+currentPage;  //重点的索引
+                if(currentPage===imgCount){
+                    $ctUl.css("left",-imgWidth)
+                    currentPage=0;
+                }
+                console.log(currentPage);
+                show();
+                isAnimate=false;
+            })
+        }
+        function playPrev(num){
+            if(isAnimate) return;
+            isAnimate=true;
+           $ctUl.animate({
+               left: "+="+imgWidth*num
+           },300,function(){
+               currentPage=currentPage-num  //重点的索引
+               if(currentPage<0){
+                   $ctUl.css("left",0-imgWidth*imgCount);
+                   currentPage=imgCount-1;
+                  // console.log(currentPage);
+               }
+               show();
+               isAnimate=false;
+           })
+        }
+        function show(){
+            $controlIi.removeClass("active").eq(currentPage).addClass("active")
+        }
+    </script>
+</body>
+</html>

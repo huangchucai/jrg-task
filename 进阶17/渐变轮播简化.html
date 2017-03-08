@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>渐变轮播</title>
+    <style>
+        *{
+            margin: 0;
+            padding:0;
+        }
+        ul{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        .ct{
+            position: relative;
+            width:310px;
+            height: 205px;
+        }
+        .ct-img{
+            position:relative;
+        }
+        .ct-img li{
+            position: absolute;
+            display: none;
+        }
+        .ct-img img{
+            width:310px;
+            height: 205px;
+        }
+        .prev{
+            left: 10px;
+        }
+        .next{
+            right: 10px;
+        }
+        .btn{
+            width: 30px;
+            height:30px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            transform:translateY(-50%);
+            background: #4E443C;
+            text-align: center;
+            color: #fff;
+            font-size: 16px;
+            line-height: 30px;
+            box-shadow: 0px 1px 4px #999;
+        }
+        .control{
+            display: flex;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform:translateX(-50%)
+        }
+        .control li{
+            width: 16px;
+            height:4px;
+            border-radius: 2px;
+            background: #fff;
+            cursor: pointer;
+            margin-left: 5px;
+            transition: all 0.3s;
+        }
+        .control li:first-child{
+            margin-left: 0px;
+        }
+        .control .active{
+            background: #666666;
+        }
+    </style>
+</head>
+<body>
+<div class="ct">
+    <ul class="ct-img">
+        <li><a href="javascript:;"><img src="http://cdn.jirengu.com/book.jirengu.com/img/23.jpg" alt=""></a></li>
+        <li><a href="javascript:;"><img src="http://cdn.jirengu.com/book.jirengu.com/img/26.jpg" alt=""></a></li>
+        <li><a href="javascript:;"><img src="http://cdn.jirengu.com/book.jirengu.com/img/24.jpg" alt=""></a></li>
+        <li><a href="javascript:;"><img src="http://cdn.jirengu.com/book.jirengu.com/img/25.jpg" alt=""></a></li>
+    </ul>
+    <a href="" class="btn prev">&lt;</a>
+    <a href="" class="btn next">&gt;</a>
+    <ul class="control">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+  //理清思路
+    //1. 首先显示第一个图片，隐藏其他图片
+    //2. 点击按钮后显示点击的下一张图片，隐藏当前图片
+    //3. 点击控制按钮就会显示相应的图片，并隐藏当前图片
+  //声明需要的变量
+    var $ctImg=$(".ct-img"),
+        $ctLi=$(".ct-img li"),
+        $controlLi=$(".control li"),
+        $prev=$(".prev"),
+        $next=$(".next"),
+        imgCount=$(".ct-img li").length,
+        currentIndex=0,
+        isAniamted=false;
+    var clock;
+    auto()
+    playMove(0)
+    $next.on("click",function(e) {
+        e.preventDefault();
+        //console.log((currentIndex+1)%imgCount)
+        playMove((currentIndex+1)%imgCount);
+    })
+    $prev.on("click",function (e) {
+        e.preventDefault()
+        playMove((imgCount+currentIndex-1)%imgCount)
+    })
+    $controlLi.on("click",function () {
+        let indexLi=$(this).index()
+        playMove(indexLi)
+    })
+    function playMove(index){
+        if(isAniamted) return
+        isAniamted=true;
+        $ctLi.eq(currentIndex).fadeOut(500)
+        $ctLi.eq(index).fadeIn(500,function () {
+            isAniamted=false;
+        });
+        currentIndex=index;
+        //console.log(currentIndex)
+        //console.log(index)
+        show()
+    }
+    function show(){
+        $controlLi.removeClass("active").eq(currentIndex).addClass("active")
+    }
+
+    function stopAuto() {
+        clearInterval(clock);
+    }
+    function auto(){
+        clock=setInterval(function(){
+            playMove((currentIndex+1)%imgCount);
+        },2000)
+    }
+</script>
+</body>
+</html>
