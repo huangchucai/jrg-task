@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>木桶布局</title>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .ct{
+            width: 1000px;
+            margin: 0 auto;
+        }
+
+        .img-row {
+            margin-bottom: 8px;
+        }
+
+        .img-row:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .img-box {
+            float: left;
+        }
+
+        .img-line .img-box:first-child {
+            padding-left: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div class="ct">
+
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+
+    //1. 生成一个构造函数来处理代码
+        function Barrel($ct,num,height){
+            this.$ct=$ct;
+            this.imgCount=[];
+            this.num=num;
+            this.height=height;
+            this.loadimg();
+        }
+        Barrel.prototype={
+            loadimg:function () {
+                var cThis=this;
+                var imgs=this.getImgs(this.num);
+                $.each(imgs,function (index,el) {
+                    //为每一个图片生产一个对象
+                    var img=new Image();
+                    img.src=el;
+                    //加载之后得到图片的高度和宽度
+                    img.onload=function () {
+                        //var heigth=200; 设置一个初始高度
+                        //console.log(img)
+                        var imgInfo={
+                            width: (img.width/img.height)*cThis.height,
+                            height: cThis.height,
+                            target: img //得到这个imgDOM对象
+                        }
+                        //加载每一个图片后处理图片
+                        cThis.handle(imgInfo)
+                    }
+                })
+            },
+            handle:function(imgInfo){
+               // console.log(imgInfo)
+                //定义一个数组存放图片的宽度和容器比较大小
+                this.imgCount.push(imgInfo);
+                //console.log(this.imgCount)
+                var sumWidth=0;
+                var newImgHeight=0;
+                var lastImg=imgInfo;
+                for(var i=0;i<this.imgCount.length;i++) {
+                    // sumWidth=sumWidth+imgInfo.width;
+                    sumWidth = sumWidth + this.imgCount[i].width;
+                    //console.log(sumWidth)
+                }
+                    if(sumWidth>this.$ct.width()){
+                   // console.log(sumWidth)
+                        //刪除最后一个添加的数据
+                        this.imgCount.pop();
+                        //填充多余的空间
+                       // console.log(this.$ct)
+                        //console.log(sumWidth) \
+                        //减去最后一个元素的宽度
+                        sumWidth=sumWidth-lastImg.width;
+                         newImgHeight=this.$ct.width()*this.height/sumWidth;
+                        //console.log(newImgHeight)
+                        this.putImg(newImgHeight);
+                        this.imgCount=[];
+                        this.imgCount.push(lastImg);
+                    }
+
+            },
+            putImg:function(newImgHeight){
+                var $imgrow=$("<div class='img-row'></div>");
+                for(var i=0;i<this.imgCount.length;i++){
+                    var $imgbox=$("<div class='img-box'></div>");
+                    //console.log(this.imgCount[i].target)
+                    var $img=$(this.imgCount[i].target);
+                    $img.height(newImgHeight);
+                    //console.log($img)
+                    $imgbox.append($img)
+                    $imgrow.append($imgbox)
+                }
+                this.$ct.append($imgrow)
+            },
+            getImgs:function (num) {
+                var width,height,color,urls=[];
+                for(var i=0;i<num;i++){
+                    color=Math.random().toString(16).substring(2,8);
+                    width=Math.floor(Math.random()*100+50);
+                    height=Math.floor((Math.random()*30+50))
+                    urls.push("http://placehold.it/" + width + "x" + height + "/" + color + "/fff")
+                }
+                return urls;
+            }
+        }
+       new Barrel($(".ct"),50,100)
+
+
+
+</script>
+</body>
+</html>

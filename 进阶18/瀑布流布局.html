@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>瀑布流布局</title>
+    <style>
+        *{
+            margin:0;
+            padding: 0;
+        }
+        .ct{
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .ct>.item{
+            width: 200px;
+            margin: 10px;
+            position: absolute;
+            text-align:  center;
+            color: #ffffff;
+            font-size: 30px;
+            transition: all 0.5s;
+        }
+        .h1{
+            height: 100px;
+            line-height: 100px;
+            background: #ff0000;
+        }
+        .h2{
+            height: 200px;
+            line-height: 200px;
+            background: #00f;
+        }
+        .h3{
+            height: 300px;
+            line-height: 300px;
+            background: mediumvioletred;
+        }
+    </style>
+</head>
+<body>
+<div class="ct">
+<div class="item h1">1</div>
+<div class="item h2">2</div>
+<div class="item h3">3</div>
+<div class="item h3">4</div>
+<div class="item h3">5</div>
+<div class="item h3">6</div>
+<div class="item h1">7</div>
+<div class="item h2">8</div>
+<div class="item h2">9</div>
+<div class="item h1">10</div>
+<div class="item h2">11</div>
+<div class="item h3">12</div>
+<div class="item h3">13</div>
+<div class="item h2">14</div>
+<div class="item h3">15</div>
+<div class="item h2">16</div>
+<div class="item h2">17</div>
+<div class="item h3">18</div>
+<div class="item h2">19</div>
+<div class="item h1">20</div>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    play()
+    $(window).on("resize",play)
+
+
+    //3. 获取数组中的最小值和相应的索引，然后把元素放在相应的位置，并加上相应的高度
+    function play(){
+        //1.获取元素的一行可以排多少个
+        var count=parseInt($(".ct").width()/$(".item").eq(0).outerWidth(true));
+        //2. 定义一个数组，填充数量的值,并初始化为0
+        var arr=[];
+        for(let i=0;i<count;i++){
+            arr[i]=0
+        }
+        $(".item").each(function(){
+            var minvalue=Math.min.apply(null,arr);
+            var index=arr.indexOf(minvalue);
+            $(this).css({
+                left: $(this).outerWidth(true)*index,
+                top: arr[index]
+            })
+            arr[index]+=$(this).outerHeight(true);
+            console.log(arr)
+        })
+    }
+
+</script>
+</body>
+</html>

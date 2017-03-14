@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片木桶布局</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .ct{
+            width: 80%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .ct .row{
+            display: flex;
+            margin-bottom: 3px;
+        }
+        .ct .box{
+            margin-left: 5px;
+        }
+/*        .ct .box:nth-child(1){
+            margin-left: 0px;
+        }*/
+    </style>
+</head>
+<body>
+<div class="ct">
+
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    function Barrel($ct){
+        this.$ct=$ct;
+        this.rowCount=[];
+        this.num=50;
+        this.marginLeft=5;
+        this.height=150;
+        this.loadImg();
+    }
+    Barrel.prototype={
+        loadImg:function(){
+            var cThis=this;
+            var imgs=this.getImgs(100);
+            for(var i=0;i<imgs.length;i++){
+                var img=new Image();
+                img.src=imgs[i];
+                img.onload=function () {
+                    var imginfo={
+                        imgWidth: this.width/this.height*cThis.height,
+                        imgHeight:cThis.height,
+                        target: this
+                    }
+                    cThis.deal(imginfo)
+                }
+            }
+        },
+        deal:function(imginfo){
+            this.rowCount.push(imginfo);
+            var lastImg=imginfo;
+            var sumWidth=0;
+            var newHeight=0;
+            for(var i=0;i<this.rowCount.length;i++){
+                sumWidth=sumWidth+this.rowCount[i].imgWidth;
+            }
+            if((this.$ct.width()-this.rowCount.length*5)<sumWidth){
+                this.rowCount.pop();
+               // console.log(this.rowCount)
+                sumWidth=sumWidth-lastImg.imgWidth;
+               // console.log(this.height)
+                newHeight=(this.$ct.width()-this.rowCount.length*5)/sumWidth*this.height;
+                this.putImg(newHeight);
+                this.rowCount=[];
+                this.rowCount.push(lastImg);
+            }
+        },
+        putImg:function (newHeight) {
+            var $imgrow=$("<div class='row'></div>");
+            for(var i=0;i<this.rowCount.length;i++){
+                var $imgbox=$("<div class='box'></div>");
+                var $img=$(this.rowCount[i].target);
+                $img.height(newHeight);
+                $imgbox.append($img);
+                $imgrow.append($imgbox)
+            }
+            this.$ct.append($imgrow)
+        },
+        getImgs:function(num){
+            var urls=[];
+            var str;
+            for(var i=0;i<num;i++){
+                var width=Math.floor(Math.random()*300+50);
+                var height=Math.floor((Math.random()*200+50))
+                str="https://unsplash.it/"+width+'/'+height;
+                urls.push(str);
+            }
+            return urls;
+        }
+    }
+    new Barrel($('.ct'));
+</script>
+</body>
+</html>
