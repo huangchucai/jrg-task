@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>瀑布流新闻加载</title>
+    <style>
+        *{
+            margin: 0;
+            padding:0;
+        }
+        ul{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        .ct{
+            width: 1000px;
+            margin: 0 auto;
+        }
+        #pic-ct{
+            position: relative;
+        }
+        .item{
+            position: absolute;
+            border: 1px  solid #dfdfdf;
+            width: 280px;
+            padding-bottom: 10px;
+            transition: all 0.8s;
+            margin: 8px;
+            box-shadow: 2px 2px 2px #e8e8e8;
+        }
+        #pic-ct .item img{
+            width: 260px;
+            margin: 10px;
+        }
+        #pic-ct .item .title{
+            padding-left: 12px;
+            height:25px;
+            border-bottom: 1px solid #dbdbdb;
+        }
+        #pic-ct .item .desp{
+            margin: 10px 15px 0;
+            color: #777371;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        .load{
+            height: 20px;
+            visibility: hidden;
+        }
+        .hide{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="ct">
+    <div class="waterfall">
+        <ul id="pic-ct">
+            <li class="item hide"></li>  <!--获取元素的width，从而计算列数-->
+            <!--<li class="item">-->
+                <!--<a href=""><img src="http://n.sinaimg.cn/top/transform/20170310/hz0P-fychttf8970287.jpg" alt=""></a>-->
+                <!--<h4 class="title">南非大盗！狒狒进家偷巧克力</h4>-->
+                <!--<p class="desp">家住南非的Jackie Brink为同事们买了好吃的黑巧克力做礼物。</p>-->
+            <!--</li>-->
+        </ul>
+        <div class="load">我是看不见的</div>
+    </div>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script>
+    //0.判定load是否看得见
+    //1. 获取得到数据
+    //2. 把数据渲染成dom节点
+    //3. dom节点以瀑布流的形式展示
+    checkshow()
+
+    function  checkshow(){
+        if(show($(".load"))){
+            getData()
+        }
+    }
+    function show($el){
+        var top=$el.offset().top;
+        var scr=$(window).scrollTop();
+        var winHeight=$(window).height()
+        if(top<scr+winHeight){
+            return true
+        }
+        else return false
+    }
+    var dataIsArrive=false;
+    var curPage=1;
+    var pageCount=15;
+    $(window).scroll(function(){
+        if(dataIsArrive) return
+
+        if(show($('.load'))){
+            console.log(111);
+            getData()
+        }
+    })
+    function getData(){
+        if(!dataIsArrive){
+            $.ajax({
+                method:"GET",
+                url:"http://platform.sina.com.cn/slide/album_tech",
+                dataType: "jsonp",
+                jsonp: "jsoncallback",
+                // http://platform.sina.com.cn/slide/album_tech?jsoncallback=func&app_key=1271687855&num=3&page=4
+                data:{
+                    app_key:"1271687855",
+                    num:pageCount,
+                    page:curPage
+                }
+            }).done(function(ret){
+                if(ret.status.code==='0'&&ret){
+                   // console.log(ret.data)
+                    place(ret.data)  //得到了10条数据
+                    curPage++
+                    dataIsArrive=false
+                }
+                else{
+                    console.log("没有得到正确的数据")
+                }
+                })
+        }
+        dataIsArrive=true;
+    }
+    function place(data){
+        var $nodes=createDom(data); //d得到了10个li节点
+        $.each($nodes,function(index,ele){
+            var $node=$(ele);
+            $node.find("img").load(function(){
+                $("#pic-ct").append($node);
+                waterfallPlace($node)
+            })
+        })
+    }
+    function createDom($els){
+        var tpls="";
+        for(var i=0;i<$els.length;i++){
+            tpls+="<li class='item'>";
+            tpls+="<a href="+$els[i].url+">";
+            tpls+="<img src="+$els[i].img_url+" alt='新闻图片'>";
+            tpls+="</a>"
+            tpls+="<h4 class='title'>"+$els[i].short_name+"</h4>"
+            tpls+="<p class='desp'>"+$els[i].short_intro+"</p>"
+            tpls+="</li>"
+        }
+       // console.log($(tpls))
+        return  $(tpls)
+        //
+    }
+    var colSumHeight=[];
+    console.log($(".item").outerWidth(true))
+    var nodeWidth=$(".item").outerWidth(true);
+    //console.log(nodeWidth)
+    var count=parseInt($("#pic-ct").width()/nodeWidth);
+    console.log(count)
+    for(var i=0; i<count; i++){
+        colSumHeight.push(0)
+    }
+
+    function waterfallPlace($node){
+        var idx = 0,
+            minSumHeight = colSumHeight[0];
+        for(var i=0;i<colSumHeight.length; i++){
+            if(colSumHeight[i] < minSumHeight){
+                idx = i;
+                minSumHeight = colSumHeight[i];
+            }
+        }
+        $node.css({
+            left: nodeWidth*idx,
+            top: minSumHeight
+          //  opacity: 1
+        });
+
+        colSumHeight[idx] = $node.outerHeight(true) + colSumHeight[idx];
+        $('#pic-ct').height(Math.max.apply(null,colSumHeight));
+
+    }
+</script>
+</body>
+</html>
