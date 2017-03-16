@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>回到顶部元素</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        a{
+            text-decoration: none;
+        }
+        .child{
+            height: 1500px;
+            border:1px solid red;
+        }
+        .goTop{
+            position: fixed;
+            width: 60px;
+            height: 30px;
+            line-height: 30px;
+            border-radius: 5px;
+            background: rebeccapurple;
+            bottom: 35px;
+            right: 35px;
+            text-align: center;
+            color: #ffffff;
+            font-size:12px;
+        }
+    </style>
+</head>
+<body>
+<div class="ct">
+    <div class="child">
+
+    </div>
+    <!--<a href="javascript:;" class="goTop">回到顶部</a>-->
+</div>
+<script>
+    var ct=document.querySelector(".ct")
+    function GoTop(ct){
+        this.ct=ct;
+        var temp=document.createElement("a");
+        temp.className="goTop"
+        temp.setAttribute("href","javascript:;")
+        temp.innerHTML="回到顶部";
+        this.target=temp;
+        this.createElement();
+    }
+    GoTop.prototype.createElement=function(){
+        var _This=this;
+        window.addEventListener("scroll",function(){
+            if(window.scrollY>100){
+                this.ct.appendChild(_This.target)
+                _This.bindEvent()
+            }
+            else if(window.scrollY<100){
+                var node=document.querySelector(".goTop")
+               // console.log(node)
+                if(node){
+                    this.ct.removeChild(node)
+                }
+            }
+        })
+    }
+    GoTop.prototype.bindEvent=function(){
+        this.ct.lastElementChild.addEventListener("click",function(e){
+            e.preventDefault();
+            window.scrollTo(0,0)
+        })
+    }
+    var button=new GoTop(ct);
+//    button.createElement()
+</script>
+</body>
+</html>

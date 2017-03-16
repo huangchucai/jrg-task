@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>基于jquery的插件</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        a{
+            text-decoration: none;
+        }
+        .child{
+            height: 1500px;
+            border:1px solid red;
+        }
+        .goTop{
+            position: fixed;
+            width: 60px;
+            height: 30px;
+            line-height: 30px;
+            border-radius: 5px;
+            background: rebeccapurple;
+            bottom: 35px;
+            right: 35px;
+            text-align: center;
+            color: #ffffff;
+            font-size:12px;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="ct">
+    <div class="child"></div>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    function GotTop($ct){
+        this.$ct=$ct;
+        this.target=$("<a href='javascript:;' class='goTop'></a>");
+        this.createNode();
+    }
+    GotTop.prototype.createNode=function () {
+        var _this=this;
+        this.target.html("回到顶部");
+        this.$ct.append(this.target);
+        $(window).on("scroll",function(){
+            //console.log($(window).scrollTop());
+            if($(window).scrollTop()>50){
+                 _this.target.animate({opacity:1},500);
+                _this.bindEvent();
+            }
+            else if($(window).scrollTop()<50) {
+                _this.target.css("opacity","0");
+
+            }
+        })
+    };
+    GotTop.prototype.bindEvent=function(){
+        this.target.on("click",function(){
+            $(window).scrollTop(0)
+        })
+    };
+    new GotTop($(".ct"))
+</script>
+</body>
+</html>
