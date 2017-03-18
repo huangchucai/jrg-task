@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>问题九</title>
+</head>
+<body>
+<script>
+    //1. 遍历字符串的值
+    //2. 把字符串的值和数量转换成一个对象中存放
+    String.prototype.getMostOften=function(){
+        var obj={}
+        //遍历字符串
+        for(let i=0;i<this.length;i++){
+            if(!obj[this[i]]){
+                obj[this.charAt(i)]=1;
+            }
+            else if(obj[this[i]]){
+                obj[this.charAt(i)]++
+            }
+        }
+        //console.log(obj)
+        //遍历这个对象的值
+        var max=0,val; //假定一个最大值
+        for(var key in obj){
+            if(obj[key]>max){
+                max=obj[key];
+                val=key;
+
+            }
+        }
+        return val;
+    }
+    var str = 'foajfljadlfjlajfl';
+    var ch= str.getMostOften();
+    console.log(ch)
+</script>
+</body>
+</html>

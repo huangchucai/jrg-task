@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>first</title>
+</head>
+<body>
+<script>
+    var name="window"
+    function Student(age){
+        this.age=age
+        this.name="student";
+        this.say=function(){
+            console.log(this.name);
+            console.log(this.age);
+        }
+    }
+    var fn1=new Student(22)
+    fn1.say()
+    var say1=fn1.say.call(window)
+    // say1  undefined
+    var fn2=new Student()
+    var say2=fn2.say.bind(Student)
+    //say2  function
+    say2()
+</script>
+</body>
+</html>
