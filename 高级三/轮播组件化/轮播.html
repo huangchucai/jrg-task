@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片的轮播</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        ul{
+            list-style:none;
+        }
+        a{
+            text-decoration: none;
+        }
+        .carousel{
+            position: relative;
+            width: 320px;
+            height: 180px;
+            overflow: hidden;
+        }
+        .carousel .ct-img{
+            display: flex;
+            width: 1280px;
+            position: relative;
+        }
+        .carousel .ct-img img{
+            width: 320px;
+            height: 180px;
+        }
+        .btn{
+            width:30px;
+            height:30px;
+            border-radius: 50%;
+            border: 1px solid white;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            display: block;
+            font-size: 20px;
+            text-align: center;
+        }
+        .prev{
+            left:10px;
+        }
+        .next{
+            right: 10px;
+        }
+        .control{
+            display: flex;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .control li a{
+            display: block;
+            width: 30px;
+            height:6px;
+            border: 1px solid white;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+        .control li .active{
+            background: #ccc;
+        }
+    </style>
+</head>
+<body>
+<div class="carousel">
+    <ul class="ct-img">
+        <li data-index="0"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/2.jpg" alt=""></a></li>
+        <li data-index="1"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/3.jpg" alt=""></a></li>
+        <li data-index="2"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/4.jpg" alt=""></a></li>
+        <li data-index="3"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/5.jpg" alt=""></a></li>
+    </ul>
+    <a href="#" class="btn next">&gt;</a>
+    <a href="#" class="btn prev">&lt;</a>
+    <ul class="control">
+        <li><a href="#" class="active"></a></li>
+        <li><a href="#"></a></li>
+        <li><a href="#"></a></li>
+        <li><a href="#"></a></li>
+    </ul>
+</div>
+<div class="carousel">
+    <ul class="ct-img">
+        <li data-index="0"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/2.jpg" alt=""></a></li>
+        <li data-index="1"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/3.jpg" alt=""></a></li>
+        <li data-index="2"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/4.jpg" alt=""></a></li>
+        <li data-index="3"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/5.jpg" alt=""></a></li>
+    </ul>
+    <a href="#" class="btn next">&gt;</a>
+    <a href="#" class="btn prev">&lt;</a>
+    <ul class="control">
+        <li><a href="#" class="active"></a></li>
+        <li><a href="#"></a></li>
+        <li><a href="#"></a></li>
+        <li><a href="#"></a></li>
+    </ul>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    var Carousel=(function(){
+        function  _Carousel ($ct){
+            this.$ct=$ct;
+            this.$ctImg=this.$ct.children(".ct-img");
+            this.$control=this.$ct.children(".control");
+            this.$next=this.$ct.children(".next");
+            this.$prev=this.$ct.children(".prev");
+            this.currentPage=0;
+            this.animateOff=true;
+            this.init();
+        }
+        _Carousel.prototype.init=function(){
+            this.$imgLength=this.$ctImg.children().length;
+            this.$imgWidth=this.$ctImg.children().eq(0).width();
+            var $firstClone=this.$ctImg.children().first().clone();
+            var $lastClone=this.$ctImg.children().last().clone();
+            this.$ctImg.prepend($lastClone);
+            this.$ctImg.append($firstClone);
+            this.$ctImg.width(this.$ctImg.children().length*this.$ctImg.children().eq(0).width());
+            this.$ctImg.css("left","-320px");
+            this.autoplay();
+            this.bind();
+        }
+        _Carousel.prototype.bind=function(){
+            var _this=this
+            this.$next.on("click",function(e){
+                clearInterval(_this.clock)
+                e.preventDefault()
+                _this.playNext(1)
+            })
+            this.$prev.on("click",function(e){
+                clearInterval(_this.clock)
+                e.preventDefault();
+                _this.playPrev(1);
+            })
+            this.$control.find("a").on('click',function(e){
+                clearInterval(_this.clock)
+                e.preventDefault();
+                var index=_this.$control.find("a").index($(this))
+                if(index<_this.currentPage){
+                    _this.playPrev(_this.currentPage-index)
+                }
+                else if(index>_this.currentPage){
+                    _this.playNext(index-_this.currentPage)
+                }
+            })
+        }
+        _Carousel.prototype.playNext=function(num){
+            var _this=this;
+            if(this.animateOff){
+                this.animateOff=false;
+                this.$ctImg.animate({
+                    left: '-='+num*this.$imgWidth
+                },300,function(){
+                    _this.animateOff=true;
+                    _this.currentPage+=num;
+                    if(_this.currentPage===_this.$imgLength){
+                        _this.currentPage=0
+                        _this.$ctImg.css("left",0-_this.$imgWidth)
+                    }
+                    _this.show()
+                })
+            }
+        }
+        _Carousel.prototype.playPrev=function(num){
+            var _this=this;
+            if(this.animateOff){
+                this.animateOff=false;
+                this.$ctImg.animate({
+                    left: '+='+num*this.$imgWidth
+                },300,function(){
+                    _this.animateOff=true;
+                    _this.currentPage-=num;
+                    if(_this.currentPage<0){
+                        _this.$ctImg.css("left",0-_this.$imgWidth*_this.$imgLength)
+                        _this.currentPage=_this.$imgLength-1
+                    }
+                    _this.show()
+                })
+            }
+        }
+        _Carousel.prototype.show=function(){
+            this.$control.find("a").removeClass("active").eq(this.currentPage).addClass("active")
+        }
+        _Carousel.prototype.autoplay=function(){
+            var _this=this;
+            this.clock=setInterval(function(){
+                _this.playNext(1)
+            },1000)
+        }
+        return {
+            init: function($ct){
+                $ct.each(function(){
+                    new _Carousel($(this))
+                })
+            }
+        }
+    })()
+    Carousel.init($(".carousel"))
+/*    Carousel.init($(".carousel").eq(0))
+    Carousel.init($(".carousel").eq(1))*/
+
+</script>
+</body>
+</html>

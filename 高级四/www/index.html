@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>组件化个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul, li {
+            list-style: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        body {
+            font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .clearfix:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        .wrap {
+            width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav {
+            padding: 25px 0;
+            background: #000;
+        }
+
+        .nav-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10000;
+        }
+
+        .nav .logo {
+            font-size: 2em;
+            color: #fed136;
+            font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial, cursive;
+        }
+
+        .wrap > ul.nav-ul {
+            float: right;
+            margin-top: -8px;
+        }
+
+        .wrap > ul.nav-ul > li {
+            float: left;
+        }
+
+        .wrap > ul.nav-ul > li > a {
+            font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            padding: 15px 10px;
+            display: block;
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+
+        .carousel {
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel > .ct-img {
+            width: 400vw;
+            position: relative;
+        }
+
+        .carousel > .ct-img li {
+            float: left;
+
+        }
+
+        .carousel > .ct-img > li > img {
+            width: 100vw;
+            height: 800px;
+        }
+
+        .btn {
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 50%;
+            border: 1px solid white;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            display: block;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .prev {
+            left: 10px;
+        }
+
+        .next {
+            right: 10px;
+        }
+
+        .control {
+            display: flex;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .control li a {
+            display: block;
+            width: 30px;
+            height: 6px;
+            border: 1px solid white;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+
+        .control li .active {
+            background: #ccc;
+        }
+
+        .services {
+            padding-top: 80px;
+            text-align: center;
+            padding-bottom: 50px;
+
+        }
+
+        .services h2 {
+            font-size: 40px;
+        }
+
+        .services p {
+            margin-top: 20px;
+            margin-bottom: 60px;
+        }
+        .wrap-item li img{
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+        .wrap-item li{
+            float: left;
+            width: 33.3%;
+        }
+        .wrap-item li p{
+            font-size: 12px;
+            padding: 0px 40px;
+            text-align: center;
+        }
+        .item{
+            background: #F7F7F7;
+            padding-top: 80px;
+            padding-bottom: 60px;
+            text-align: center;
+        }
+        .item h2{
+            font-size: 40px;
+            margin-bottom: 30px;
+        }
+        .item .item-btn{
+            width: 80px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            display: block;
+            color: #ffffff;
+            background: red;
+            font-size: 15px;
+            border-radius: 5px;
+            margin: 0 auto;
+        }
+        .goTop{
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #3B545B;
+            background: #ffffff;
+            text-align: center;
+            line-height: 30px;
+            bottom: 30px;
+            right: 50px;
+            color: #000;
+            cursor:  pointer;
+            display: none;
+        }
+        .wrap-pic{
+            position: relative;
+        }
+        .wrap-pic  .item-li{
+            position: absolute;
+            border: 1px  solid #dfdfdf;
+            width: 280px;
+            padding-bottom: 10px;
+            transition: all 0.8s;
+            margin: 8px;
+            box-shadow: 2px 2px 2px #e8e8e8;
+        }
+        .item  .wrap-pic .hide{
+            display: none;
+        }
+        .item .wrap-pic img{
+            width: 260px;
+            margin: 10px;
+            margin-bottom: 0px;
+        }
+        .item .item-btn{
+            width: 80px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            display: block;
+            color: #ffffff;
+            background: red;
+            font-size: 15px;
+            border-radius: 5px;
+            margin: 10px auto;
+        }
+        .item .wrap-pic .title{
+            padding-left: 12px;
+            height:25px;
+            border-bottom: 1px solid #dbdbdb;
+        }
+        .item .wrap-pic .desp{
+            margin: 10px 15px 0;
+            color: #777371;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        .about{
+            text-align: center;
+            padding-top: 80px;
+            padding-bottom: 50px;
+        }
+        .about h2{
+            font-size: 40px;
+            margin-bottom: 30px;
+        }
+        .line{
+            position: relative;
+            margin-top: 50px;
+        }
+        .line:after{
+            content: '';
+            display: block;
+            height:100%;
+            width: 5px;
+            position: absolute;
+            left: 50%;
+            top:0;
+            background: #000;
+        }
+        .about .line li{
+            margin-bottom: 30px;
+        }
+        .about .line li .pic{
+            width: 170px;
+            height: 170px;
+            margin-left: -85px;
+            position: absolute;
+            left: 50%;
+            z-index: 3;
+        }
+        .about .line li:nth-child(odd) .word{
+            float: left;
+            text-align: right;
+            width: 30%;
+            padding: 0px 20px 20px 100px;
+        }
+        .about .line li:nth-child(even) .word{
+            float: right;
+            width: 30%;
+            text-align: left;
+            padding: 0px 100px 20px 20px;
+        }
+        .about .line li .pic img{
+            width: 100%;
+            border-radius: 50%;
+            border: 5px solid #eee;
+        }
+        .about .line li .desp{
+            line-height: 1.75;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="ct">
+    <div class="nav nav-fixed">
+        <div class="wrap">
+            <span class="logo">huangchucai</span>
+            <ul class="clearfix nav-ul">
+                <li><a href="javascript:;">个人生活</a></li>
+                <li><a href="javascript:;">个人项目</a></li>
+                <li><a href="javascript:;">关于本人</a></li>
+                <li><a href="javascript:;">个人团队</a></li>
+                <li><a href="javascript:;">联系我们</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="carousel">
+        <ul class="ct-img">
+            <li><img src="./images/2.jpg!p5" alt=""></li>
+            <li><img src="./images/3.jpg!p5" alt=""></li>
+            <li><img src="./images/4.jpg!p5" alt=""></li>
+            <li><img src="./images/5.jpg!p5" alt=""></li>
+        </ul>
+        <a href="#" class="btn next">&gt;</a>
+        <a href="#" class="btn prev">&lt;</a>
+        <ul class="control">
+            <li><a href="#" class="active"></a></li>
+            <li><a href="#"></a></li>
+            <li><a href="#"></a></li>
+            <li><a href="#"></a></li>
+        </ul>
+    </div>
+    <div class="services">
+        <div class="wrap">
+            <h2>个人项目</h2>
+            <p>这是平时做的小demo</p>
+            <div class="wrap-item">
+                <ul class="clearfix">
+                    <li><img src="images/1.jpg" alt=""><h4>懒加载</h4>
+                        <p>当你在看一些新闻的网站的时候，网速如果慢的话，发现网站里面的很多图片都是从白色之后才换成本身的图片。这样可以减少用户的请求，减缓加载的负荷。</p></li>
+                    <li><img src="images/1.jpg" alt=""><h4>懒加载</h4>
+                        <p>当你在看一些新闻的网站的时候，网速如果慢的话，发现网站里面的很多图片都是从白色之后才换成本身的图片。这样可以减少用户的请求，减缓加载的负荷。</p></li>
+                    <li><img src="images/1.jpg" alt=""><h4>懒加载</h4>
+                        <p>当你在看一些新闻的网站的时候，网速如果慢的话，发现网站里面的很多图片都是从白色之后才换成本身的图片。这样可以减少用户的请求，减缓加载的负荷。</p></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <div class="wrap">
+            <h2>关于本人</h2>
+            <ul class="wrap-pic">
+                <!--获取规定的高度和计算高度-->
+                <li class="item-li hide"></li>
+<!--                <li class="item-li">
+                    <a href="javascript:;">
+                        <img src="http://i4.buimg.com/567571/14c8ee62c1f0f307.png" alt="">
+                    </a>
+                    <h4 class="title">工具展示</h4>
+                    <p class="desp">人生就是一列开往坟墓的列车，路途上会有很多站</p>
+                </li>-->
+            </ul>
+            <a href="javascript:;" class="item-btn">加载更多</a>
+        </div>
+    </div>
+    <div class="about">
+        <div class="wrap">
+            <h2>个人团队</h2>
+            <p>好像是没有团队</p>
+            <ul class="line">
+                <li class="clearfix">
+                    <div class="word">
+                        <div class="title">
+                            <h4>2012-2016</h4>
+                            <h4>毕业于武汉纺织大学</h4>
+                        </div>
+                        <div class="desp">
+                            <p>武汉纺织大学坐落于“九省通衢”之称的湖北武汉，地处光谷腹地，
+                                成为一所以工科为主，理、工、文（艺）、经、管、法、教育等多学科协调发展，纺织服装特色鲜明、优势突出的普通高等院校。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pic">
+                        <img src="images/1.jpg" alt="图片展示">
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="word">
+                        <div class="title">
+                            <h4>2016-2017</h4>
+                            <h4>虎彩网络科技有限公司</h4>
+                        </div>
+                        <div class="desp">
+                            <p>武汉纺织大学坐落于“九省通衢”之称的湖北武汉，地处光谷腹地，
+                            成为一所以工科为主，理、工、文（艺）、经、管、法、教育等多学科协调发展，纺织服装特色鲜明、优势突出的普通高等院校。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pic">
+                        <img src="images/1.jpg" alt="图片展示">
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="word">
+                        <div class="title">
+                            <h4>2016-2017</h4>
+                            <h4>大学室友</h4>
+                        </div>
+                        <div class="desp">
+                            <p>武汉纺织大学坐落于“九省通衢”之称的湖北武汉，地处光谷腹地，
+                                成为一所以工科为主，理、工、文（艺）、经、管、法、教育等多学科协调发展，纺织服装特色鲜明、优势突出的普通高等院校。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pic">
+                        <img src="images/1.jpg" alt="图片展示">
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="goTop">UP</div>
+</div>
+<!--<script src="js/lib/jquery.min.js"></script>
+<script src="js/lib/Carousel.js"></script>
+<script src="js/lib/goTop.js"></script>
+-->
+<!--<script data-main="./js/app/main.js"  src="./src/js/require.js"></script>-->
+<script data-main="./src/dist/merge.js"  src="./src/js/require.js"></script>
+<!--<script src="./src/dist/merge.js"></script>-->
+<!--<script>-->
+    <!--Carousel.init($(".carousel"))-->
+    <!--new GoTop($('.goTop'))-->
+    <!---->
+<!--</script>-->
+
+</body>
+</html>

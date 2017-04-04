@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>模态框的制作</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button {
+            padding: 1px 6px;
+            margin: 5px 10px;
+        }
+
+        .dialog-overlay {
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            position: absolute;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            opacity: 0.5;
+        }
+
+        .dialog-box {
+            width: 350px;
+            padding-bottom: 10px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            border-radius: 5px;
+            background: #eee;
+        }
+
+        .dialog-box header {
+            padding: 10px 20px;
+            color: #ffffff;
+            background: #676666;
+
+        }
+
+        .dialog-box header .close {
+            position: absolute;
+            right: 10px;
+            top: 14px;
+            font-family: fantasy;
+            cursor: pointer;
+        }
+
+        .dialog-box main {
+            padding: 10px;
+            margin: 15px;
+            margin-left: 50px;
+            color: #666;
+            font-size: 11px;
+        }
+
+        .dialog-box footer {
+            text-align: center;
+        }
+
+        .dialog-box footer .btn {
+            display: inline-block;
+            width: 50px;
+            padding: 5px 0px;
+            background-color: #e33100;
+            color: #ffffff;
+            margin: 2px;
+            border-radius: 3px;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<button class="open1">打开1</button>
+<button class="open2">打开2</button>
+<button class="open3">打开3</button>
+<button class="open4">打开4</button>
+<button class="open5">打开5</button>
+<div class="dialog hide">
+    <div class="dialog-overlay"></div>
+    <div class="dialog-box">
+        <header>
+            <h3>欢迎点击我的主页</h3>
+            <span class="close">X</span>
+        </header>
+        <main>
+            <ul>
+                <li>列表1</li>
+                <li>列表2</li>
+                <li>列表3</li>
+                <li>列表4</li>
+            </ul>
+        </main>
+        <footer>
+            <a href="javascript:;" class="btn confirm">确定</a>
+            <a href="javascript:;" class="btn btn-close">取消</a>
+        </footer>
+    </div>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    var Dailog = (function () {
+        function Modal() {
+            this.createDailog()  //创建一个自定义模板
+            this.bindEvent();  //绑定对应的事件
+        }
+
+        Modal.prototype = {
+            //得到this.$dialog这个模板对象,并填充到body中
+            createDailog: function () {
+                var tpl = '<div class="dialog hide">'
+                    + '<div class="dialog-overlay"></div> '
+                    + '<div class="dialog-box"><header><h3></h3><span class="close">x</span></header>'
+                    + '<main></main>'
+                    + '<footer>'
+                    + '<a href="javascript:;" class="btn btn-close">取消</a>'
+                    + '<a href="javascript:;" class="btn confirm">确定</a></footer>'
+                    + '</div>'
+                    + '</div>'
+                this.$dialog = $(tpl);  //得到这个模板字符串
+                $('body').append(this.$dialog)
+            },
+            //定义默认的参数
+            defaultOpts: {
+                title: '',    //标题header
+                message: '',  //主要内容main
+                isShowCloseBtn: true, //取消按钮
+                isShowConfirmBtn: false,//辩证按钮
+                onClose: function () {
+                },  //定义关闭后的执行函数
+                onConfirm: function () {
+                }//定义点击确定后的执行函数
+            },
+            //点用的方法
+            open: function (opts) {
+                this.setOpts(opts)   //设置传入的值
+                this.setDialog();  //设置模态框
+                this.showDialog()  //点击显示模态框
+            },
+            //设置数据对象this.opts
+            setOpts: function (opts) {
+                if (typeof opts === 'string') {
+                    this.opts = $.extend({}, this.defaultOpts, {message: opts})
+                }
+                else if (typeof opts === 'object') {
+                    this.opts = $.extend({}, this.defaultOpts, opts)
+                }
+            },
+            //
+            setDialog: function () {
+                var $dialog = this.$dialog;
+                if (!this.opts.title) {
+                    $dialog.find('header').hide();
+                } else {
+                    $dialog.find('header').show()
+                }
+                if (!this.opts.isShowCloseBtn) {
+                    $dialog.find('footer .btn-close').hide()
+                } else {
+                    $dialog.find('footer .btn-close').show()
+                }
+                if (!this.opts.isShowConfirmBtn) {
+                    $dialog.find('footer .confirm').hide()
+                } else {
+                    $dialog.find('footer .confirm').show()
+                }
+                $dialog.find('header h3').text(this.opts.title)
+                $dialog.find('main').html(this.opts.message)
+            },
+            showDialog: function () {
+                this.$dialog.show()
+            },
+            hideDialog: function () {
+                this.$dialog.hide()
+            },
+            bindEvent: function () {
+                var _this = this;
+                this.$dialog.find('.btn-close').on('click', function (e) {
+                    e.preventDefault()
+                    _this.opts.onClose()  //调用自己定义的函数
+                    _this.hideDialog()
+                })
+                this.$dialog.find(".confirm").on('click', function (e) {
+                    e.preventDefault()
+                    _this.opts.onConfirm()   //调用自己定义的函数
+                    _this.hideDialog()
+                })
+                this.$dialog.find(".close").on('click', function (e) {
+                    e.preventDefault()
+                    _this.opts.onClose()   //调用自己定义的函数
+                    _this.hideDialog()
+                })
+            }
+        }
+
+        return new Modal()
+    })()
+
+    //实例化对象，绑定事件
+    $(".open1").on('click', function () {
+        Dailog.open('hello,这里是我的主页')
+    })
+    $(".open2").on('click', function () {
+        Dailog.open('<a href="http://huangchucai.cn/Resume/online.html" target="_blank">这是我的个人简历</a>')
+    })
+    $(".open3").on('click', function () {
+        Dailog.open({
+            title:'这是黄楚才的主页',
+            message: '欢迎点击',
+            isShowCloseBtn:true,
+            isShowConfirmBtn:true
+        })
+    })
+    var tpl='<ul><li>这是个人简历</li><li>这是生活照</li><li>这是我的项目</li></ul>'
+    $(".open4").on('click', function () {
+        Dailog.open({
+            title:'这是黄楚才的主要经历',
+            message: tpl,
+            isShowCloseBtn:true,
+            isShowConfirmBtn:true
+        })
+    })
+    $(".open5").on('click', function () {
+        Dailog.open({
+            title:'谢谢查看',
+            message: '<h3>请联系我</h3><p style="font-size: 12px">18271947865</p>',
+            isShowCloseBtn:true,
+            isShowConfirmBtn:true
+        })
+    })
+</script>
+</body>
+</html>

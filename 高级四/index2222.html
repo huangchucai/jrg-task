@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>组件化个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul, li {
+            list-style: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        body {
+            font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .clearfix:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        .wrap {
+            width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav {
+            padding: 25px 0;
+            background: #000;
+        }
+
+        .nav-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10000;
+        }
+
+        .nav .logo {
+            font-size: 2em;
+            color: #fed136;
+            font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial, cursive;
+        }
+
+        .wrap > ul {
+            float: right;
+            margin-top: -8px;
+        }
+
+        .wrap > ul > li {
+            float: left;
+        }
+
+        .wrap > ul > li > a {
+            font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            padding: 15px 10px;
+            display: block;
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+
+        .carousel {
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel > .ct-img {
+            width: 400vw;
+            position: relative;
+        }
+
+        .carousel > .ct-img li {
+            float: left;
+
+        }
+
+        .carousel > .ct-img > li > img {
+            width: 100vw;
+            height: 800px;
+        }
+
+        .btn {
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 50%;
+            border: 1px solid white;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            display: block;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .prev {
+            left: 10px;
+        }
+
+        .next {
+            right: 10px;
+        }
+
+        .control {
+            display: flex;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .control li a {
+            display: block;
+            width: 30px;
+            height: 6px;
+            border: 1px solid white;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+
+        .control li .active {
+            background: #ccc;
+        }
+
+        .services {
+            padding-top: 80px;
+            text-align: center;
+            padding-bottom: 50px;
+        }
+
+        .services h2 {
+            font-size: 40px;
+        }
+
+        .services p {
+            margin-top: 20px;
+            margin-bottom: 60px;
+        }
+        .wrap-item li img{
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+        .wrap-item li{
+            float: left;
+            width: 33.3%;
+        }
+        .wrap-item li p{
+            font-size: 12px;
+            padding: 0px 40px;
+            text-align: center;
+        }
+        .item{
+            background: #F7F7F7;
+            padding-top: 80px;
+            padding-bottom: 60px;
+            text-align: center;
+        }
+        .item h2{
+            font-size: 40px;
+            margin-bottom: 30px;
+        }
+        .item .item-btn{
+            width: 80px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            display: block;
+            color: #ffffff;
+            background: red;
+            font-size: 15px;
+            border-radius: 5px;
+            margin: 0 auto;
+        }
+        .goTop{
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #3B545B;
+            background: #ffffff;
+            text-align: center;
+            line-height: 30px;
+            bottom: 30px;
+            right: 50px;
+            color: #000;
+            cursor:  pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="ct">
+    <div class="nav nav-fixed">
+        <div class="wrap">
+            <span class="logo">huangchucai</span>
+            <ul class="clearfix">
+                <li><a href="javascript:;">个人生活</a></li>
+                <li><a href="javascript:;">个人项目</a></li>
+                <li><a href="javascript:;">关于本人</a></li>
+                <li><a href="javascript:;">个人团队</a></li>
+                <li><a href="javascript:;">联系我们</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="carousel">
+        <ul class="ct-img">
+            <li><img src="https://img.500px.me/500px205529639.jpg!p5" alt=""></li>
+            <li><img src="https://img.500px.me/500px205562069.jpg!p5" alt=""></li>
+            <li><img src="https://img.500px.me/500px205509169.jpg!p5" alt=""></li>
+            <li><img src="https://img.500px.me/500px205510865.jpg!p5" alt=""></li>
+        </ul>
+        <a href="#" class="btn next">&gt;</a>
+        <a href="#" class="btn prev">&lt;</a>
+        <ul class="control">
+            <li><a href="#" class="active"></a></li>
+            <li><a href="#"></a></li>
+            <li><a href="#"></a></li>
+            <li><a href="#"></a></li>
+        </ul>
+    </div>
+    <div class="services">
+        <div class="wrap">
+            <h2>个人项目</h2>
+            <p>这是平时做的小demo</p>
+            <div class="wrap-item">
+                <ul class="clearfix">
+                    <li><img src="www/images/1.jpg" alt=""><h4>懒加载</h4>
+                        <p>当你在看一些新闻的网站的时候，网速如果慢的话，发现网站里面的很多图片都是从白色之后才换成本身的图片。这样可以减少用户的请求，减缓加载的负荷。</p></li>
+                    <li><img src="www/images/1.jpg" alt=""><h4>懒加载</h4>
+                        <p>当你在看一些新闻的网站的时候，网速如果慢的话，发现网站里面的很多图片都是从白色之后才换成本身的图片。这样可以减少用户的请求，减缓加载的负荷。</p></li>
+                    <li><img src="www/images/1.jpg" alt=""><h4>懒加载</h4>
+                        <p>当你在看一些新闻的网站的时候，网速如果慢的话，发现网站里面的很多图片都是从白色之后才换成本身的图片。这样可以减少用户的请求，减缓加载的负荷。</p></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <div class="wrap">
+            <h2>个人团队</h2>
+            <a href="javascript:;" class="item-btn">加载更多</a>
+        </div>
+    </div>
+    <div class="about"></div>
+    <div class="goTop">UP</div>
+</div>
+<script src="www/js/lib/jquery.min.js"></script>
+<script src="www/js/lib/Carousel.js"></script>
+<script src="www/js/lib/goTop.js"></script>
+<script>
+    Carousel.init($(".carousel"))
+    new GoTop($('.goTop'))
+</script>
+</body>
+</html>
