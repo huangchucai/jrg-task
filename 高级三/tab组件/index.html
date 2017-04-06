@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tab组件化</title>
+    <style>
+        *{
+            margin: 0;
+            padding:0;
+        }
+        ul,li{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        .tab{
+            width: 600px;
+            border: 1px solid #cccccc;
+            margin: 20px auto;
+            padding: 20px 10px;
+            border-radius: 4px
+        }
+        .clearfix:after{
+            content:"";
+            display: block;
+            clear: both;
+        }
+        .nav ul{
+            border-bottom: 1px solid #ccc;
+        }
+        .nav ul li{
+            float: left;
+
+        }
+        .nav ul .active a{
+            border: 1px solid #ccc;
+            border-bottom-color: #fff;
+            color: #333;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: -1px;
+        }
+        .nav ul li a{
+            display: block;
+            padding: 10px 20px;
+            color: brown;
+            border-top: 1px solid #fff;
+            border-right: 1px solid #fff;
+            border-left: 1px solid #fff;
+        }
+        .content{
+            padding: 20px 10px;
+        }
+        .content>ul>li{
+            display: none;
+        }
+        .content>ul>.show{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="tab">
+    <div class="nav">
+        <ul class="clearfix">
+            <li class="active"><a href="javascript:;">选项1</a></li>
+            <li><a href="javascript:;">选项2</a></li>
+            <li><a href="javascript:;">选项3</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <ul>
+            <li class="show">内容1</li>
+            <li>内容2</li>
+            <li>内容3</li>
+        </ul>
+    </div>
+</div>
+<div class="tab">
+    <div class="nav">
+        <ul class="clearfix">
+            <li class="active"><a href="javascript:;">选项1</a></li>
+            <li><a href="javascript:;">选项2</a></li>
+            <li><a href="javascript:;">选项3</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <ul>
+            <li class="show">内容1</li>
+            <li>内容2</li>
+            <li>内容3</li>
+        </ul>
+    </div>
+</div>
+<div class="tab">
+    <div class="nav">
+        <ul class="clearfix">
+            <li class="active"><a href="javascript:;">选项1</a></li>
+            <li><a href="javascript:;">选项2</a></li>
+            <li><a href="javascript:;">选项3</a></li>
+            <li><a href="javascript:;">选项4</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <ul>
+            <li class="show">内容1</li>
+            <li>内容2</li>
+            <li>内容3</li>
+            <li>内容4</li>
+        </ul>
+    </div>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    function Tab($ct) {
+        this.$ct=$ct;
+        this.$NavLis=this.$ct.find(".nav li");
+        this.$ContentLi=this.$ct.find(".content li")
+        this.index=0;
+        this.bind()
+    }
+    Tab.prototype.bind=function(){
+        var _this=this;
+        this.$NavLis.on("click",function (e) {
+            e.preventDefault();
+            _this.index=$(this).index();
+            _this.$NavLis.removeClass("active");
+            _this.$NavLis.eq(_this.index).addClass("active")
+            _this.show()
+        })
+    }
+    Tab.prototype.show=function(){
+        this.$ContentLi.removeClass("show")
+        this.$ContentLi.eq(this.index).addClass("show")
+    }
+    var tabToggle=(function(){
+        return {
+            init: function($tab){
+                $tab.each(function () {
+                    new Tab($(this))
+                })
+            }
+        }
+    })()
+
+    tabToggle.init($(".tab"))
+/*    new Tab($(".tab").eq(0))
+    new Tab($(".tab").eq(1))
+    new Tab($(".tab").eq(2))*/
+</script>
+</body>
+</html>
