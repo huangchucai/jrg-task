@@ -136,6 +136,7 @@
         var _this = this;
         this.NavLis.forEach(function (NavLi) {
             NavLi.onclick = function (e) {
+  // 点击的是a标签，要找到li标签  注意注意
                 var target = e.target.parentElement;
                 var index = Array.prototype.indexOf.call(_this.NavLis, target)
 //                var index=[].indexOf.call(_this.NavLis,target);
